@@ -10,6 +10,7 @@ import (
 	"github.com/codersgyan/expressify/internal/languages"
 	"github.com/codersgyan/expressify/internal/package_managers"
 	"github.com/codersgyan/expressify/internal/selector"
+	"github.com/codersgyan/expressify/internal/test_frameworks"
 )
 
 var quitTextStyle = lipgloss.NewStyle().Margin(1, 0, 2, 4)
@@ -21,6 +22,7 @@ const (
 	StateProjectName
 	StateLanguage
 	StatePackageManager
+	StateTestFramework
 	// StateConfig
 	// StateLogger
 	// StateAuth
@@ -36,6 +38,8 @@ type CliModel struct {
 	SelectedLanguage       string
 	PackageManagerList     list.Model
 	SelectedPackageManager string
+	TestFrameworkList      list.Model
+	SelectedTestFramework  string
 	Error                  error
 }
 
@@ -83,8 +87,17 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if ok {
 					m.SelectedPackageManager = string(i)
 				}
-				// todo: transition next state.
-				// m.CurrentState = StatePackageManager
+				m.CurrentState = StateTestFramework
+				return m, nil
+			}
+
+			if m.CurrentState == StateTestFramework {
+				i, ok := m.TestFrameworkList.SelectedItem().(selector.Item)
+				if ok {
+					m.SelectedTestFramework = string(i)
+				}
+				// todo: move to next state
+				// m.CurrentState = StateTestFramework
 				return m, nil
 			}
 
@@ -105,6 +118,11 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	if m.CurrentState == StatePackageManager {
 		m.PackageManagerList, cmd = m.PackageManagerList.Update(msg)
+		return m, cmd
+	}
+
+	if m.CurrentState == StateTestFramework {
+		m.TestFrameworkList, cmd = m.TestFrameworkList.Update(msg)
 		return m, cmd
 	}
 
@@ -141,6 +159,17 @@ func (m CliModel) View() string {
 			return quitTextStyle.Render(fmt.Sprintf(str))
 		}
 		return m.PackageManagerList.View()
+	case StateTestFramework:
+		if m.SelectedTestFramework != "" {
+			var str string
+			if m.SelectedTestFramework == "SuperTest with Jest" {
+				str = "🎉 Awesome choice! Supertest is best framework 🚀"
+			} else if m.SelectedTestFramework == "Mocha with Chai HTTP" {
+				str = "👍 Great pick! Mocha with Chai is powerful framework"
+			}
+			return quitTextStyle.Render(fmt.Sprintf(str))
+		}
+		return m.TestFrameworkList.View()
 	}
 	return s
 }
@@ -162,5 +191,6 @@ Press Enter to begin... (or ESC to quit)
 `,
 		LanguageList:       languages.NewLanguageSelector().List,
 		PackageManagerList: package_managers.NewPManagerSelector().List,
+		TestFrameworkList:  test_frameworks.NewTestFrameworkSelector().List,
 	}
 }
