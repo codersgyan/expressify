@@ -15,5 +15,5 @@ func NewLanguageSelector() *selector.Selector {
 	for _, item := range languageList {
 		items = append(items, list.Item(item))
 	}
-	return selector.NewSelector("😎 Choose a language", items)
+	return selector.NewSelector("\n😎 Choose a language", items)
 }

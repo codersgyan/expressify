@@ -227,7 +227,7 @@ func (m CliModel) View() string {
 	case StateWelcome:
 		s = m.WelcomeMessage
 	case StateProjectName:
-		s = "Enter your project name:\n" + m.ProjectNameInput.View()
+		s = "\n📗 Enter your project name:\n\n" + m.ProjectNameInput.View()
 	case StateLanguage:
 		if m.SelectedLanguage != "" {
 			var str string
@@ -339,7 +339,7 @@ func (m CliModel) View() string {
 
 func InitialModel() CliModel {
 	projectNameInput := textinput.New()
-	projectNameInput.Placeholder = "What would you like to name your project?"
+	projectNameInput.Placeholder = "my-expressify-app"
 	return CliModel{
 		CurrentState:     StateWelcome,
 		ProjectNameInput: projectNameInput,

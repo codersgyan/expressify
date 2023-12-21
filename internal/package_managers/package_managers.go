@@ -15,5 +15,5 @@ func NewPManagerSelector() *selector.Selector {
 	for _, item := range packageManagers {
 		items = append(items, list.Item(item))
 	}
-	return selector.NewSelector("😎 Choose a package manager", items)
+	return selector.NewSelector("\n😎 Choose a package manager", items)
 }

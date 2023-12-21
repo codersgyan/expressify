@@ -16,5 +16,5 @@ func NewConfigSelector() *selector.Selector {
 	for _, item := range configs {
 		items = append(items, list.Item(item))
 	}
-	return selector.NewSelector("😎 Choose a config style", items)
+	return selector.NewSelector("\n😎 Choose a config style", items)
 }

@@ -18,5 +18,5 @@ func NewORMSelector() *selector.Selector {
 	for _, item := range orms {
 		items = append(items, list.Item(item))
 	}
-	return selector.NewSelector("😎 Choose a ORM", items)
+	return selector.NewSelector("\n😎 Choose an ORM", items)
 }

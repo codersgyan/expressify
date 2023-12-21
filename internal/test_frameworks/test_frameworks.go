@@ -15,5 +15,5 @@ func NewTestFrameworkSelector() *selector.Selector {
 	for _, item := range testFrameworks {
 		items = append(items, list.Item(item))
 	}
-	return selector.NewSelector("😎 Choose a test framework", items)
+	return selector.NewSelector("\n😎 Choose a test framework", items)
 }

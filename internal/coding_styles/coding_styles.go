@@ -15,5 +15,5 @@ func NewCodingStyleSelector() *selector.Selector {
 	for _, item := range codingStyles {
 		items = append(items, list.Item(item))
 	}
-	return selector.NewSelector("😎 Choose a coding style", items)
+	return selector.NewSelector("\n😎 Choose a coding style", items)
 }

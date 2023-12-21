@@ -37,7 +37,7 @@ func NewSelector(title string, items []list.Item) *Selector {
 }
 
 const listHeight = 14
-const defaultWidth = 50
+const defaultWidth = 100
 
 var (
 	titleStyle        = lipgloss.NewStyle().MarginLeft(2)
