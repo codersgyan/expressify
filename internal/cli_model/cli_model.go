@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/codersgyan/expressify/internal/configs"
 	"github.com/codersgyan/expressify/internal/databases"
 	"github.com/codersgyan/expressify/internal/languages"
 	"github.com/codersgyan/expressify/internal/loggers"
@@ -29,6 +30,7 @@ const (
 	StateLoggerLibrary
 	StateDatabase
 	StateORM
+	StateConfig
 	// StateConfig
 	// StateAuth
 	// StateMainWork
@@ -51,6 +53,8 @@ type CliModel struct {
 	SelectedDatabase       string
 	ORMList                list.Model
 	SelectedORM            string
+	ConfigList             list.Model
+	SelectedConfig         string
 	Error                  error
 }
 
@@ -134,8 +138,17 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if ok {
 					m.SelectedORM = string(i)
 				}
+				m.CurrentState = StateConfig
+				return m, nil
+			}
+
+			if m.CurrentState == StateConfig {
+				i, ok := m.ConfigList.SelectedItem().(selector.Item)
+				if ok {
+					m.SelectedConfig = string(i)
+				}
 				// todo: transition to next state
-				// m.CurrentState = StateDatabase
+				// m.CurrentState = StateConfig
 				return m, nil
 			}
 
@@ -176,6 +189,11 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	if m.CurrentState == StateORM {
 		m.ORMList, cmd = m.ORMList.Update(msg)
+		return m, cmd
+	}
+
+	if m.CurrentState == StateConfig {
+		m.ConfigList, cmd = m.ConfigList.Update(msg)
 		return m, cmd
 	}
 
@@ -269,6 +287,20 @@ func (m CliModel) View() string {
 			return quitTextStyle.Render(fmt.Sprintf(str))
 		}
 		return m.ORMList.View()
+
+	case StateConfig:
+		if m.SelectedConfig != "" {
+			var str string
+			if m.SelectedConfig == "ENV based" {
+				str = "🎉 Awesome choice! 🚀"
+			} else if m.SelectedConfig == "File based (JSON)" {
+				str = "👍 Great pick!"
+			} else if m.SelectedConfig == "File based (YAML)" {
+				str = "👍 Great pick!"
+			}
+			return quitTextStyle.Render(fmt.Sprintf(str))
+		}
+		return m.ConfigList.View()
 	}
 	return s
 }
@@ -294,5 +326,6 @@ Press Enter to begin... (or ESC to quit)
 		LoggerLibraryList:  loggers.NewLoggerSelector().List,
 		DatabaseList:       databases.NewDatabaseSelector().List,
 		ORMList:            orms.NewORMSelector().List,
+		ConfigList:         configs.NewConfigSelector().List,
 	}
 }
