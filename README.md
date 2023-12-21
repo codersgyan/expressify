@@ -27,9 +27,19 @@ Expressify-CLI tackles these challenges head-on by automating the creation of a 
 Running Expressify-CLI locally is straightforward with the help of the provided Makefile.
 Follow these steps to set up and run the project in a development environment:
 
+
+##### Prerequisites:
+
+Ensure that Go is installed on your system. Verify this with `go version`.
+Familiarity with basic make commands can be helpful.
+
+**_Notes:_**
+The Makefile simplifies common tasks but can be modified if your workflow requires it.
+Additional configuration or steps might be necessary depending on the specific setup of your project.
+
 ##### Clone the Repository
 
-Clone the repository to your local machine using Git:
+Start with cloning the repository to your local machine using Git:
 
 ```bash
 git clone https://github.com/codersgyan/expressify.git
@@ -71,15 +81,6 @@ Removes the generated binary and any other temporary files.
 ```bash
 make clean
 ```
-
-##### Prerequisites:
-
-Ensure that Go is installed on your system. Verify this with go version.
-Familiarity with basic make commands can be helpful.
-
-**_Notes:_**
-The Makefile simplifies common tasks but can be modified if your workflow requires it.
-Additional configuration or steps might be necessary depending on the specific setup of your project.
 
 #### Open Source Contribution 🤝
 
