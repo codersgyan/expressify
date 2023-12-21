@@ -8,6 +8,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/codersgyan/expressify/cmd/languages"
+	"github.com/codersgyan/expressify/cmd/package_managers"
 )
 
 var quitTextStyle = lipgloss.NewStyle().Margin(1, 0, 2, 4)
@@ -18,6 +19,7 @@ const (
 	StateWelcome AppState = iota
 	StateProjectName
 	StateLanguage
+	StatePackageManager
 	// StateConfig
 	// StateLogger
 	// StateAuth
@@ -26,12 +28,14 @@ const (
 )
 
 type CliModel struct {
-	CurrentState     AppState
-	ProjectNameInput textinput.Model
-	WelcomeMessage   string
-	LanguageList     list.Model
-	SelectedLanguage string
-	Error            error
+	CurrentState           AppState
+	ProjectNameInput       textinput.Model
+	WelcomeMessage         string
+	LanguageList           list.Model
+	SelectedLanguage       string
+	PackageManagerList     list.Model
+	SelectedPackageManager string
+	Error                  error
 }
 
 func (m CliModel) Init() tea.Cmd {
@@ -69,6 +73,17 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if ok {
 					m.SelectedLanguage = string(i)
 				}
+				m.CurrentState = StatePackageManager
+				return m, nil
+			}
+
+			if m.CurrentState == StatePackageManager {
+				i, ok := m.PackageManagerList.SelectedItem().(package_managers.Item)
+				if ok {
+					m.SelectedPackageManager = string(i)
+				}
+				// todo: transition next state.
+				// m.CurrentState = StatePackageManager
 				return m, nil
 			}
 
@@ -84,6 +99,11 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	if m.CurrentState == StateLanguage {
 		m.LanguageList, cmd = m.LanguageList.Update(msg)
+		return m, cmd
+	}
+
+	if m.CurrentState == StatePackageManager {
+		m.PackageManagerList, cmd = m.PackageManagerList.Update(msg)
 		return m, cmd
 	}
 
@@ -108,8 +128,18 @@ func (m CliModel) View() string {
 			}
 			return quitTextStyle.Render(fmt.Sprintf(str))
 		}
-
 		return m.LanguageList.View()
+	case StatePackageManager:
+		if m.SelectedPackageManager != "" {
+			var str string
+			if m.SelectedPackageManager == "NPM" {
+				str = "🎉 Awesome choice! NPM is the world's most popular package manager. Let's get coding! 🚀"
+			} else if m.SelectedPackageManager == "PNPM" {
+				str = "👍 Great pick! PNPM is a fast, disk space efficient package manager. Time to build! 🏗️"
+			}
+			return quitTextStyle.Render(fmt.Sprintf(str))
+		}
+		return m.PackageManagerList.View()
 	}
 	return s
 }
@@ -129,6 +159,7 @@ Let's create something amazing together! 🎉👨‍💻👩‍💻
 
 Press Enter to begin... (or ESC to quit)
 `,
-		LanguageList: languages.NewLanguageSelector().List,
+		LanguageList:       languages.NewLanguageSelector().List,
+		PackageManagerList: package_managers.NewPManagerSelector().List,
 	}
 }
