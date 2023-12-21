@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/codersgyan/expressify/internal/databases"
 	"github.com/codersgyan/expressify/internal/languages"
 	"github.com/codersgyan/expressify/internal/loggers"
 	"github.com/codersgyan/expressify/internal/package_managers"
@@ -25,6 +26,7 @@ const (
 	StatePackageManager
 	StateTestFramework
 	StateLoggerLibrary
+	StateDatabase
 	// StateConfig
 	// StateAuth
 	// StateMainWork
@@ -43,6 +45,8 @@ type CliModel struct {
 	SelectedTestFramework  string
 	LoggerLibraryList      list.Model
 	SelectedLoggerLibrary  string
+	DatabaseList           list.Model
+	SelectedDatabase       string
 	Error                  error
 }
 
@@ -108,8 +112,17 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if ok {
 					m.SelectedLoggerLibrary = string(i)
 				}
+				m.CurrentState = StateDatabase
+				return m, nil
+			}
+
+			if m.CurrentState == StateDatabase {
+				i, ok := m.DatabaseList.SelectedItem().(selector.Item)
+				if ok {
+					m.SelectedDatabase = string(i)
+				}
 				// todo: transition to next state
-				// m.CurrentState = StateLoggerLibrary
+				// m.CurrentState = StateDatabase
 				return m, nil
 			}
 
@@ -140,6 +153,11 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	if m.CurrentState == StateLoggerLibrary {
 		m.LoggerLibraryList, cmd = m.LoggerLibraryList.Update(msg)
+		return m, cmd
+	}
+
+	if m.CurrentState == StateDatabase {
+		m.DatabaseList, cmd = m.DatabaseList.Update(msg)
 		return m, cmd
 	}
 
@@ -201,6 +219,20 @@ func (m CliModel) View() string {
 			return quitTextStyle.Render(fmt.Sprintf(str))
 		}
 		return m.LoggerLibraryList.View()
+
+	case StateDatabase:
+		if m.SelectedDatabase != "" {
+			var str string
+			if m.SelectedDatabase == "MongoDB" {
+				str = "🎉 Awesome choice! MongoDB is powerful NoSQL database 🚀"
+			} else if m.SelectedDatabase == "PostgreSQL" {
+				str = "👍 Great pick! PostgreSQL is powerful relational database"
+			} else if m.SelectedDatabase == "MySQL" {
+				str = "👍 Great pick! MySQL is powerful database"
+			}
+			return quitTextStyle.Render(fmt.Sprintf(str))
+		}
+		return m.DatabaseList.View()
 	}
 	return s
 }
@@ -224,5 +256,6 @@ Press Enter to begin... (or ESC to quit)
 		PackageManagerList: package_managers.NewPManagerSelector().List,
 		TestFrameworkList:  test_frameworks.NewTestFrameworkSelector().List,
 		LoggerLibraryList:  loggers.NewLoggerSelector().List,
+		DatabaseList:       databases.NewDatabaseSelector().List,
 	}
 }
