@@ -8,6 +8,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/codersgyan/expressify/internal/languages"
+	"github.com/codersgyan/expressify/internal/loggers"
 	"github.com/codersgyan/expressify/internal/package_managers"
 	"github.com/codersgyan/expressify/internal/selector"
 	"github.com/codersgyan/expressify/internal/test_frameworks"
@@ -23,8 +24,8 @@ const (
 	StateLanguage
 	StatePackageManager
 	StateTestFramework
+	StateLoggerLibrary
 	// StateConfig
-	// StateLogger
 	// StateAuth
 	// StateMainWork
 	// StateDone
@@ -40,6 +41,8 @@ type CliModel struct {
 	SelectedPackageManager string
 	TestFrameworkList      list.Model
 	SelectedTestFramework  string
+	LoggerLibraryList      list.Model
+	SelectedLoggerLibrary  string
 	Error                  error
 }
 
@@ -96,8 +99,17 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if ok {
 					m.SelectedTestFramework = string(i)
 				}
-				// todo: move to next state
-				// m.CurrentState = StateTestFramework
+				m.CurrentState = StateLoggerLibrary
+				return m, nil
+			}
+
+			if m.CurrentState == StateLoggerLibrary {
+				i, ok := m.LoggerLibraryList.SelectedItem().(selector.Item)
+				if ok {
+					m.SelectedLoggerLibrary = string(i)
+				}
+				// todo: transition to next state
+				// m.CurrentState = StateLoggerLibrary
 				return m, nil
 			}
 
@@ -123,6 +135,11 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	if m.CurrentState == StateTestFramework {
 		m.TestFrameworkList, cmd = m.TestFrameworkList.Update(msg)
+		return m, cmd
+	}
+
+	if m.CurrentState == StateLoggerLibrary {
+		m.LoggerLibraryList, cmd = m.LoggerLibraryList.Update(msg)
 		return m, cmd
 	}
 
@@ -170,6 +187,20 @@ func (m CliModel) View() string {
 			return quitTextStyle.Render(fmt.Sprintf(str))
 		}
 		return m.TestFrameworkList.View()
+
+	case StateLoggerLibrary:
+		if m.SelectedLoggerLibrary != "" {
+			var str string
+			if m.SelectedLoggerLibrary == "Winston" {
+				str = "🎉 Awesome choice! Winston is best logger out there 🚀"
+			} else if m.SelectedLoggerLibrary == "Bunyan" {
+				str = "👍 Great pick! Bunyan is powerful logger"
+			} else if m.SelectedLoggerLibrary == "Pino" {
+				str = "👍 Great pick! Pino is powerful logger"
+			}
+			return quitTextStyle.Render(fmt.Sprintf(str))
+		}
+		return m.LoggerLibraryList.View()
 	}
 	return s
 }
@@ -192,5 +223,6 @@ Press Enter to begin... (or ESC to quit)
 		LanguageList:       languages.NewLanguageSelector().List,
 		PackageManagerList: package_managers.NewPManagerSelector().List,
 		TestFrameworkList:  test_frameworks.NewTestFrameworkSelector().List,
+		LoggerLibraryList:  loggers.NewLoggerSelector().List,
 	}
 }
