@@ -9,6 +9,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/codersgyan/expressify/cmd/languages"
 	"github.com/codersgyan/expressify/cmd/package_managers"
+	"github.com/codersgyan/expressify/internal/selector"
 )
 
 var quitTextStyle = lipgloss.NewStyle().Margin(1, 0, 2, 4)
@@ -69,7 +70,7 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			if m.CurrentState == StateLanguage {
-				i, ok := m.LanguageList.SelectedItem().(languages.Item)
+				i, ok := m.LanguageList.SelectedItem().(selector.Item)
 				if ok {
 					m.SelectedLanguage = string(i)
 				}
@@ -78,7 +79,7 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			if m.CurrentState == StatePackageManager {
-				i, ok := m.PackageManagerList.SelectedItem().(package_managers.Item)
+				i, ok := m.PackageManagerList.SelectedItem().(selector.Item)
 				if ok {
 					m.SelectedPackageManager = string(i)
 				}
