@@ -25,73 +25,69 @@ const (
 	// StateDone
 )
 
-type Project struct {
-	Name     string
-	Language string
-}
-
-type UIElems struct {
-	ProjectNameInput textinput.Model
-}
-
-type PredefinedMsgs struct {
-	WelcomeMessage string
-}
-
 type CliModel struct {
-	CurrentState AppState
-	Project
-	UIElems
-	PredefinedMsgs
-	List   list.Model
-	Choice string
+	CurrentState     AppState
+	ProjectNameInput textinput.Model
+	WelcomeMessage   string
+	LanguageList     list.Model
+	SelectedLanguage string
+	Error            error
 }
 
 func (m CliModel) Init() tea.Cmd {
 	return nil
 }
 
+type (
+	errMsg error
+)
+
 func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.List.SetWidth(msg.Width)
+		m.LanguageList.SetWidth(msg.Width)
+		m.ProjectNameInput.Width = msg.Width
 		return m, nil
 	case tea.KeyMsg:
 		switch msg.Type {
-		case tea.KeyCtrlC, tea.KeyEsc:
-			return m, tea.Quit
 		case tea.KeyEnter:
+			// here, only changing the state
 			if m.CurrentState == StateWelcome {
-				m.CurrentState = StateProjectName  // Transition to project name input
-				m.UIElems.ProjectNameInput.Focus() // Focus on the input
+				m.CurrentState = StateProjectName
+				m.ProjectNameInput.Focus()
 				return m, nil
-			} else if m.CurrentState == StateProjectName {
-				m.Project.Name = m.UIElems.ProjectNameInput.Value() // Store the project name
-				m.CurrentState = StateLanguage                      // Transition to next state (e.g., StateLanguage)
-				return m, nil
-			} else if m.CurrentState == StateLanguage {
-				i, ok := m.List.SelectedItem().(languages.Item)
-				if ok {
-					m.Choice = string(i)
-				}
-			} else {
-				return m, tea.Quit
 			}
-		}
+			if m.CurrentState == StateProjectName {
+				m.CurrentState = StateLanguage
+				return m, nil
+			}
 
-		if m.CurrentState == StateLanguage {
-			m.List, cmd = m.List.Update(msg)
-			return m, cmd
+			if m.CurrentState == StateLanguage {
+				i, ok := m.LanguageList.SelectedItem().(languages.Item)
+				if ok {
+					m.SelectedLanguage = string(i)
+				}
+				return m, nil
+			}
+
+		case tea.KeyEsc, tea.KeyCtrlC:
+			return m, tea.Quit
 		}
 	}
 
 	if m.CurrentState == StateProjectName {
-		m.UIElems.ProjectNameInput, cmd = m.UIElems.ProjectNameInput.Update(msg)
+		m.ProjectNameInput, cmd = m.ProjectNameInput.Update(msg)
+		return m, cmd
 	}
 
-	return m, cmd
+	if m.CurrentState == StateLanguage {
+		m.LanguageList, cmd = m.LanguageList.Update(msg)
+		return m, cmd
+	}
+
+	return m, nil
 }
 
 func (m CliModel) View() string {
@@ -99,31 +95,40 @@ func (m CliModel) View() string {
 
 	switch m.CurrentState {
 	case StateWelcome:
-		s = m.PredefinedMsgs.WelcomeMessage + "\nPress Enter to continue..."
+		s = m.WelcomeMessage
 	case StateProjectName:
-		s = "Enter your project name:\n" + m.UIElems.ProjectNameInput.View()
+		s = "Enter your project name:\n" + m.ProjectNameInput.View()
 	case StateLanguage:
-		if m.Choice != "" {
-			return quitTextStyle.Render(fmt.Sprintf("%s? Sounds good to me.", m.Choice))
+		if m.SelectedLanguage != "" {
+			var str string
+			if m.SelectedLanguage == "JavaScript" {
+				str = "🎉 Awesome choice! JavaScript brings flexibility and dynamism to your project. Let's get coding! 🚀"
+			} else if m.SelectedLanguage == "TypeScript" {
+				str = "👍 Great pick! TypeScript adds type safety and robustness to your application. Time to build! 🏗️"
+			}
+			return quitTextStyle.Render(fmt.Sprintf(str))
 		}
-		return "\n" + m.List.View()
+
+		return m.LanguageList.View()
 	}
 	return s
 }
 
 func InitialModel() CliModel {
-	l := languages.NewLanguageSelector()
 	projectNameInput := textinput.New()
 	projectNameInput.Placeholder = "What would you like to name your project?"
-	// projectNameInput.Focus()
 	return CliModel{
-		Project: Project{},
-		UIElems: UIElems{
-			ProjectNameInput: projectNameInput,
-		},
-		PredefinedMsgs: PredefinedMsgs{
-			WelcomeMessage: "Hey artisan! Welcome to expressify. \nLet's build together an awesome project!",
-		},
-		List: l.List,
+		CurrentState:     StateWelcome,
+		ProjectNameInput: projectNameInput,
+		WelcomeMessage: `
+🌟🚀 Welcome to Expressify! 🚀🌟
+We're thrilled to have you on board for a seamless and efficient Express.js application setup.
+Get ready to supercharge your development process with our intuitive CLI tool.
+
+Let's create something amazing together! 🎉👨‍💻👩‍💻
+
+Press Enter to begin... (or ESC to quit)
+`,
+		LanguageList: languages.NewLanguageSelector().List,
 	}
 }
