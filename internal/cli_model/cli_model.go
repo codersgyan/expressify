@@ -10,6 +10,7 @@ import (
 	"github.com/codersgyan/expressify/internal/databases"
 	"github.com/codersgyan/expressify/internal/languages"
 	"github.com/codersgyan/expressify/internal/loggers"
+	"github.com/codersgyan/expressify/internal/orms"
 	"github.com/codersgyan/expressify/internal/package_managers"
 	"github.com/codersgyan/expressify/internal/selector"
 	"github.com/codersgyan/expressify/internal/test_frameworks"
@@ -27,6 +28,7 @@ const (
 	StateTestFramework
 	StateLoggerLibrary
 	StateDatabase
+	StateORM
 	// StateConfig
 	// StateAuth
 	// StateMainWork
@@ -47,6 +49,8 @@ type CliModel struct {
 	SelectedLoggerLibrary  string
 	DatabaseList           list.Model
 	SelectedDatabase       string
+	ORMList                list.Model
+	SelectedORM            string
 	Error                  error
 }
 
@@ -121,6 +125,15 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if ok {
 					m.SelectedDatabase = string(i)
 				}
+				m.CurrentState = StateORM
+				return m, nil
+			}
+
+			if m.CurrentState == StateORM {
+				i, ok := m.ORMList.SelectedItem().(selector.Item)
+				if ok {
+					m.SelectedORM = string(i)
+				}
 				// todo: transition to next state
 				// m.CurrentState = StateDatabase
 				return m, nil
@@ -158,6 +171,11 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	if m.CurrentState == StateDatabase {
 		m.DatabaseList, cmd = m.DatabaseList.Update(msg)
+		return m, cmd
+	}
+
+	if m.CurrentState == StateORM {
+		m.ORMList, cmd = m.ORMList.Update(msg)
 		return m, cmd
 	}
 
@@ -233,6 +251,24 @@ func (m CliModel) View() string {
 			return quitTextStyle.Render(fmt.Sprintf(str))
 		}
 		return m.DatabaseList.View()
+
+	case StateORM:
+		if m.SelectedORM != "" {
+			var str string
+			if m.SelectedORM == "Mongoose" {
+				str = "🎉 Awesome choice! 🚀"
+			} else if m.SelectedORM == "Sequelize" {
+				str = "👍 Great pick!"
+			} else if m.SelectedORM == "TypeORM" {
+				str = "👍 Great pick!"
+			} else if m.SelectedORM == "Prisma" {
+				str = "👍 Great pick!"
+			} else if m.SelectedORM == "None" {
+				str = "🔥 Loving hardcore, yeah 💪"
+			}
+			return quitTextStyle.Render(fmt.Sprintf(str))
+		}
+		return m.ORMList.View()
 	}
 	return s
 }
@@ -257,5 +293,6 @@ Press Enter to begin... (or ESC to quit)
 		TestFrameworkList:  test_frameworks.NewTestFrameworkSelector().List,
 		LoggerLibraryList:  loggers.NewLoggerSelector().List,
 		DatabaseList:       databases.NewDatabaseSelector().List,
+		ORMList:            orms.NewORMSelector().List,
 	}
 }
