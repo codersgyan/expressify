@@ -60,7 +60,7 @@ type LanguageSelector struct {
 
 func NewLanguageSelector() *LanguageSelector {
 	l := list.New(languageList, itemDelegate{}, defaultWidth, listHeight)
-	l.Title = "😎Choose a language"
+	l.Title = "😎 Choose a language"
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(false)
 	l.Styles.Title = titleStyle
