@@ -5,7 +5,7 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/codersgyan/expressify/cmd/cli_model"
+	"github.com/codersgyan/expressify/internal/cli_model"
 )
 
 func main() {

@@ -7,8 +7,8 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/codersgyan/expressify/cmd/languages"
-	"github.com/codersgyan/expressify/cmd/package_managers"
+	"github.com/codersgyan/expressify/internal/languages"
+	"github.com/codersgyan/expressify/internal/package_managers"
 	"github.com/codersgyan/expressify/internal/selector"
 )
 
