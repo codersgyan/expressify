@@ -33,12 +33,12 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 		return
 	}
 
-	str := fmt.Sprintf("%d. %s", index+1, i)
+	str := fmt.Sprintf(" %d. %s", index+1, i)
 
 	fn := itemStyle.Render
 	if index == m.Index() {
 		fn = func(s ...string) string {
-			return selectedItemStyle.Render("> " + strings.Join(s, " "))
+			return selectedItemStyle.Render("👉" + strings.Join(s, " "))
 		}
 	}
 
@@ -60,7 +60,7 @@ type LanguageSelector struct {
 
 func NewLanguageSelector() *LanguageSelector {
 	l := list.New(languageList, itemDelegate{}, defaultWidth, listHeight)
-	l.Title = "Which language do you want to use?"
+	l.Title = "😎Choose a language"
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(false)
 	l.Styles.Title = titleStyle
