@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/codersgyan/expressify/internal/coding_styles"
 	"github.com/codersgyan/expressify/internal/configs"
 	"github.com/codersgyan/expressify/internal/databases"
 	"github.com/codersgyan/expressify/internal/languages"
@@ -31,7 +32,7 @@ const (
 	StateDatabase
 	StateORM
 	StateConfig
-	// StateConfig
+	StateCodingStyle
 	// StateAuth
 	// StateMainWork
 	// StateDone
@@ -55,6 +56,8 @@ type CliModel struct {
 	SelectedORM            string
 	ConfigList             list.Model
 	SelectedConfig         string
+	CodingStyleList        list.Model
+	SelectedCodingStyle    string
 	Error                  error
 }
 
@@ -147,6 +150,15 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if ok {
 					m.SelectedConfig = string(i)
 				}
+				m.CurrentState = StateCodingStyle
+				return m, nil
+			}
+
+			if m.CurrentState == StateCodingStyle {
+				i, ok := m.CodingStyleList.SelectedItem().(selector.Item)
+				if ok {
+					m.SelectedCodingStyle = string(i)
+				}
 				// todo: transition to next state
 				// m.CurrentState = StateConfig
 				return m, nil
@@ -155,6 +167,9 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyEsc, tea.KeyCtrlC:
 			return m, tea.Quit
 		}
+	case errMsg:
+		m.Error = msg
+		return m, tea.Quit
 	}
 
 	if m.CurrentState == StateProjectName {
@@ -194,6 +209,11 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	if m.CurrentState == StateConfig {
 		m.ConfigList, cmd = m.ConfigList.Update(msg)
+		return m, cmd
+	}
+
+	if m.CurrentState == StateCodingStyle {
+		m.CodingStyleList, cmd = m.CodingStyleList.Update(msg)
 		return m, cmd
 	}
 
@@ -301,6 +321,18 @@ func (m CliModel) View() string {
 			return quitTextStyle.Render(fmt.Sprintf(str))
 		}
 		return m.ConfigList.View()
+
+	case StateCodingStyle:
+		if m.SelectedCodingStyle != "" {
+			var str string
+			if m.SelectedCodingStyle == "Functional" {
+				str = "🎉 Awesome choice! 🚀"
+			} else if m.SelectedCodingStyle == "Object Oriented" {
+				str = "👍 Great pick!"
+			}
+			return quitTextStyle.Render(fmt.Sprintf(str))
+		}
+		return m.CodingStyleList.View()
 	}
 	return s
 }
@@ -327,5 +359,6 @@ Press Enter to begin... (or ESC to quit)
 		DatabaseList:       databases.NewDatabaseSelector().List,
 		ORMList:            orms.NewORMSelector().List,
 		ConfigList:         configs.NewConfigSelector().List,
+		CodingStyleList:    coding_styles.NewCodingStyleSelector().List,
 	}
 }
