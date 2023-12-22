@@ -5,9 +5,16 @@ import (
 	"github.com/codersgyan/expressify/internal/selector"
 )
 
+type TestFramwork string
+
+const (
+	SuperTestWithJest TestFramwork = "SuperTest with Jest"
+	MochaWithChaiHTTP TestFramwork = "Mocha with Chai HTTP"
+)
+
 var testFrameworks = []selector.Item{
-	selector.Item("SuperTest with Jest"),
-	selector.Item("Mocha with Chai HTTP"),
+	selector.Item(SuperTestWithJest),
+	selector.Item(MochaWithChaiHTTP),
 }
 
 func NewTestFrameworkSelector() *selector.Selector {

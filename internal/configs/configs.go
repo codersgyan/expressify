@@ -5,10 +5,18 @@ import (
 	"github.com/codersgyan/expressify/internal/selector"
 )
 
+type Config string
+
+const (
+	ENV  Config = "ENV based"
+	JSON Config = "File based (JSON)"
+	YAML Config = "File based (YAML)"
+)
+
 var configs = []selector.Item{
-	selector.Item("ENV based"),
-	selector.Item("File based (JSON)"),
-	selector.Item("File based (YAML)"),
+	selector.Item(ENV),
+	selector.Item(JSON),
+	selector.Item(YAML),
 }
 
 func NewConfigSelector() *selector.Selector {

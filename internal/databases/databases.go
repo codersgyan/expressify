@@ -5,10 +5,18 @@ import (
 	"github.com/codersgyan/expressify/internal/selector"
 )
 
+type Database string
+
+const (
+	MongoDB    Database = "MongoDB"
+	PostgreSQL Database = "PostgreSQL"
+	MySQL      Database = "MySQL"
+)
+
 var databases = []selector.Item{
-	selector.Item("MongoDB"),
-	selector.Item("PostgreSQL"),
-	selector.Item("MySQL"),
+	selector.Item(MongoDB),
+	selector.Item(PostgreSQL),
+	selector.Item(MySQL),
 }
 
 func NewDatabaseSelector() *selector.Selector {

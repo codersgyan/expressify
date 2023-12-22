@@ -5,9 +5,16 @@ import (
 	"github.com/codersgyan/expressify/internal/selector"
 )
 
+type PackageManager string
+
+const (
+	NPM  PackageManager = "NPM"
+	PNPM PackageManager = "PNPM"
+)
+
 var packageManagers = []selector.Item{
-	selector.Item("NPM"),
-	selector.Item("PNPM"),
+	selector.Item(NPM),
+	selector.Item(PNPM),
 }
 
 func NewPManagerSelector() *selector.Selector {

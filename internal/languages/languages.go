@@ -5,9 +5,18 @@ import (
 	"github.com/codersgyan/expressify/internal/selector"
 )
 
+type Language string
+
+const (
+	JavaScript Language = "JavaScript"
+	TypeScript Language = "TypeScript"
+)
+
 var languageList = []selector.Item{
-	selector.Item("JavaScript"),
-	selector.Item("TypeScript"),
+	selector.Item(JavaScript),
+	selector.Item(TypeScript),
+	// selector.Item("JavaScript"),
+	// selector.Item("TypeScript"),
 }
 
 func NewLanguageSelector() *selector.Selector {

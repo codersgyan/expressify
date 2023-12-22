@@ -5,12 +5,22 @@ import (
 	"github.com/codersgyan/expressify/internal/selector"
 )
 
+type ORM string
+
+const (
+	Mongoose  ORM = "Mongoose"
+	Sequelize ORM = "Sequelize"
+	TypeORM   ORM = "TypeORM"
+	Prisma    ORM = "Prisma"
+	None      ORM = "None"
+)
+
 var orms = []selector.Item{
-	selector.Item("Mongoose"),
-	selector.Item("Sequelize"),
-	selector.Item("TypeORM"),
-	selector.Item("Prisma"),
-	selector.Item("None"),
+	selector.Item(Mongoose),
+	selector.Item(Sequelize),
+	selector.Item(TypeORM),
+	selector.Item(Prisma),
+	selector.Item(None),
 }
 
 func NewORMSelector() *selector.Selector {

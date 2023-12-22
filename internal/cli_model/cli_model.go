@@ -231,9 +231,9 @@ func (m CliModel) View() string {
 	case StateLanguage:
 		if m.SelectedLanguage != "" {
 			var str string
-			if m.SelectedLanguage == "JavaScript" {
+			if m.SelectedLanguage == string(languages.JavaScript) {
 				str = "🎉 Awesome choice! JavaScript brings flexibility and dynamism to your project. Let's get coding! 🚀"
-			} else if m.SelectedLanguage == "TypeScript" {
+			} else if m.SelectedLanguage == string(languages.TypeScript) {
 				str = "👍 Great pick! TypeScript adds type safety and robustness to your application. Time to build! 🏗️"
 			}
 			return quitTextStyle.Render(fmt.Sprintf(str))
@@ -242,9 +242,9 @@ func (m CliModel) View() string {
 	case StatePackageManager:
 		if m.SelectedPackageManager != "" {
 			var str string
-			if m.SelectedPackageManager == "NPM" {
+			if m.SelectedPackageManager == string(package_managers.NPM) {
 				str = "🎉 Awesome choice! NPM is the world's most popular package manager. Let's get coding! 🚀"
-			} else if m.SelectedPackageManager == "PNPM" {
+			} else if m.SelectedPackageManager == string(package_managers.PNPM) {
 				str = "👍 Great pick! PNPM is a fast, disk space efficient package manager. Time to build! 🏗️"
 			}
 			return quitTextStyle.Render(fmt.Sprintf(str))
@@ -253,9 +253,9 @@ func (m CliModel) View() string {
 	case StateTestFramework:
 		if m.SelectedTestFramework != "" {
 			var str string
-			if m.SelectedTestFramework == "SuperTest with Jest" {
+			if m.SelectedTestFramework == string(test_frameworks.SuperTestWithJest) {
 				str = "🎉 Awesome choice! Supertest is best framework 🚀"
-			} else if m.SelectedTestFramework == "Mocha with Chai HTTP" {
+			} else if m.SelectedTestFramework == string(test_frameworks.MochaWithChaiHTTP) {
 				str = "👍 Great pick! Mocha with Chai is powerful framework"
 			}
 			return quitTextStyle.Render(fmt.Sprintf(str))
@@ -265,11 +265,11 @@ func (m CliModel) View() string {
 	case StateLoggerLibrary:
 		if m.SelectedLoggerLibrary != "" {
 			var str string
-			if m.SelectedLoggerLibrary == "Winston" {
+			if m.SelectedLoggerLibrary == string(loggers.Winston) {
 				str = "🎉 Awesome choice! Winston is best logger out there 🚀"
-			} else if m.SelectedLoggerLibrary == "Bunyan" {
+			} else if m.SelectedLoggerLibrary == string(loggers.Bunyan) {
 				str = "👍 Great pick! Bunyan is powerful logger"
-			} else if m.SelectedLoggerLibrary == "Pino" {
+			} else if m.SelectedLoggerLibrary == string(loggers.Pino) {
 				str = "👍 Great pick! Pino is powerful logger"
 			}
 			return quitTextStyle.Render(fmt.Sprintf(str))
@@ -279,11 +279,11 @@ func (m CliModel) View() string {
 	case StateDatabase:
 		if m.SelectedDatabase != "" {
 			var str string
-			if m.SelectedDatabase == "MongoDB" {
+			if m.SelectedDatabase == string(databases.MongoDB) {
 				str = "🎉 Awesome choice! MongoDB is powerful NoSQL database 🚀"
-			} else if m.SelectedDatabase == "PostgreSQL" {
+			} else if m.SelectedDatabase == string(databases.PostgreSQL) {
 				str = "👍 Great pick! PostgreSQL is powerful relational database"
-			} else if m.SelectedDatabase == "MySQL" {
+			} else if m.SelectedDatabase == string(databases.MySQL) {
 				str = "👍 Great pick! MySQL is powerful database"
 			}
 			return quitTextStyle.Render(fmt.Sprintf(str))
@@ -293,15 +293,15 @@ func (m CliModel) View() string {
 	case StateORM:
 		if m.SelectedORM != "" {
 			var str string
-			if m.SelectedORM == "Mongoose" {
+			if m.SelectedORM == string(orms.Mongoose) {
 				str = "🎉 Awesome choice! 🚀"
-			} else if m.SelectedORM == "Sequelize" {
+			} else if m.SelectedORM == string(orms.Sequelize) {
 				str = "👍 Great pick!"
-			} else if m.SelectedORM == "TypeORM" {
+			} else if m.SelectedORM == string(orms.TypeORM) {
 				str = "👍 Great pick!"
-			} else if m.SelectedORM == "Prisma" {
+			} else if m.SelectedORM == string(orms.Prisma) {
 				str = "👍 Great pick!"
-			} else if m.SelectedORM == "None" {
+			} else if m.SelectedORM == string(orms.None) {
 				str = "🔥 Loving hardcore, yeah 💪"
 			}
 			return quitTextStyle.Render(fmt.Sprintf(str))
@@ -311,11 +311,11 @@ func (m CliModel) View() string {
 	case StateConfig:
 		if m.SelectedConfig != "" {
 			var str string
-			if m.SelectedConfig == "ENV based" {
+			if m.SelectedConfig == string(configs.ENV) {
 				str = "🎉 Awesome choice! 🚀"
-			} else if m.SelectedConfig == "File based (JSON)" {
+			} else if m.SelectedConfig == string(configs.JSON) {
 				str = "👍 Great pick!"
-			} else if m.SelectedConfig == "File based (YAML)" {
+			} else if m.SelectedConfig == string(configs.YAML) {
 				str = "👍 Great pick!"
 			}
 			return quitTextStyle.Render(fmt.Sprintf(str))
@@ -325,9 +325,9 @@ func (m CliModel) View() string {
 	case StateCodingStyle:
 		if m.SelectedCodingStyle != "" {
 			var str string
-			if m.SelectedCodingStyle == "Functional" {
+			if m.SelectedCodingStyle == string(coding_styles.Functional) {
 				str = "🎉 Awesome choice! 🚀"
-			} else if m.SelectedCodingStyle == "Object Oriented" {
+			} else if m.SelectedCodingStyle == string(coding_styles.ObjectOriented) {
 				str = "👍 Great pick!"
 			}
 			return quitTextStyle.Render(fmt.Sprintf(str))

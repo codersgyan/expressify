@@ -5,9 +5,16 @@ import (
 	"github.com/codersgyan/expressify/internal/selector"
 )
 
+type CodingStyle string
+
+const (
+	Functional     CodingStyle = "Functional"
+	ObjectOriented CodingStyle = "Object Oriented"
+)
+
 var codingStyles = []selector.Item{
-	selector.Item("Functional"),
-	selector.Item("Object Oriented"),
+	selector.Item(Functional),
+	selector.Item(ObjectOriented),
 }
 
 func NewCodingStyleSelector() *selector.Selector {

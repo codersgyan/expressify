@@ -5,10 +5,18 @@ import (
 	"github.com/codersgyan/expressify/internal/selector"
 )
 
+type Logger string
+
+const (
+	Winston Logger = "Winston"
+	Bunyan  Logger = "Bunyan"
+	Pino    Logger = "Pino"
+)
+
 var loggers = []selector.Item{
-	selector.Item("Winston"),
-	selector.Item("Bunyan"),
-	selector.Item("Pino"),
+	selector.Item(Winston),
+	selector.Item(Bunyan),
+	selector.Item(Pino),
 }
 
 func NewLoggerSelector() *selector.Selector {
