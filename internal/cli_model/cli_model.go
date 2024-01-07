@@ -15,6 +15,7 @@ import (
 	"github.com/codersgyan/expressify/internal/orms"
 	"github.com/codersgyan/expressify/internal/package_managers"
 	"github.com/codersgyan/expressify/internal/selector"
+	"github.com/codersgyan/expressify/internal/structure"
 	"github.com/codersgyan/expressify/internal/test_frameworks"
 )
 
@@ -33,6 +34,7 @@ const (
 	StateORM
 	StateConfig
 	StateCodingStyle
+	StateFolderStructure
 	// StateAuth
 	// StateMainWork
 	// StateDone
@@ -58,6 +60,7 @@ type CliModel struct {
 	SelectedConfig         string
 	CodingStyleList        list.Model
 	SelectedCodingStyle    string
+	FolderStructureCreated bool
 	Error                  error
 }
 
@@ -159,8 +162,19 @@ func (m CliModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if ok {
 					m.SelectedCodingStyle = string(i)
 				}
+				m.CurrentState = StateFolderStructure
+				return m, nil
+			}
+
+			if m.CurrentState == StateFolderStructure {
+				// Create folder structure
+				err := structure.CreateBaseFileStructure(m.ProjectNameInput.Value(), m.SelectedLanguage)
+				if err != nil {
+					fmt.Printf("error creating folder structure: %v", err)
+					return m, tea.Quit
+				}
 				// todo: transition to next state
-				// m.CurrentState = StateConfig
+				// m.CurrentState = StateFolderStructure
 				return m, nil
 			}
 
